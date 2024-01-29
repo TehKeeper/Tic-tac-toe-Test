@@ -131,4 +131,22 @@ namespace general.win
             return base.Handle(state, coord, cont, cellCount, gameFinished);
         }
     }
+
+    public abstract class WinCheckBase : WinConditionBase
+    {
+        public abstract WinConditionBase Create();
+    }
+
+    public class WinCheckOne : WinCheckBase
+    {
+        public override WinConditionBase Create()
+        {
+            var winCheck = new WinConditionTie();
+            winCheck
+                .SetNext(new WinConditionMain())
+                .SetNext(new WinConditionFinale());
+
+            return winCheck;
+        }
+    }
 }

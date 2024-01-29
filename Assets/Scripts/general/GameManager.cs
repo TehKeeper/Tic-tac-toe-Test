@@ -5,6 +5,7 @@ using general.win;
 using ui.button;
 using Unity.Mathematics;
 using UnityEngine;
+using Zenject;
 
 namespace general
 {
@@ -27,11 +28,16 @@ namespace general
             new(2, 0), new(2, 1), new(2, 2),
         };
 
+        private readonly WinConditionBase _winCheck;
 
-        public GameManager()
+        [Inject]
+        public GameManager(WinCheckBase winCheck)
         {
             _xImg = Resources.Load<Sprite>("Sprites/Ximg");
             _oImg = Resources.Load<Sprite>("Sprites/Oimg");
+
+            _winCheck = winCheck.Create();
+            Debug.Log($"Wincheck: {winCheck.GetType()}");
         }
 
 
@@ -52,14 +58,8 @@ namespace general
             callback?.Invoke(GetClrImg(cellState));
 
 
-            var winCheck = new WinConditionTie();
-            winCheck
-                .SetNext(new WinConditionMain())
-                .SetNext(new WinConditionFinale());
-
-
             Debug.Log($"Win State Coords: {coords}, cell state: {cellState}");
-            var winState = winCheck.Handle(cellState, coords,
+            var winState = _winCheck.Handle(cellState, coords,
                 _cellStates.Where(kvp => kvp.Value == cellState).Select(v => v.Key).Contains,
                 _cellStates.Values.Count(v => v != CellState.None), false);
 

@@ -1,4 +1,5 @@
-﻿using ui.button;
+﻿using general.win;
+using ui.button;
 using Zenject;
 
 namespace general
@@ -9,6 +10,7 @@ namespace general
         {
             Container.Bind<IGameManager>().To<GameManager>().AsSingle().NonLazy();
             Container.Bind<BtnViewer>().AsTransient();
+            Container.Bind<WinCheckBase>().To<WinCheckOne>().AsTransient();
         }
     }
 }
