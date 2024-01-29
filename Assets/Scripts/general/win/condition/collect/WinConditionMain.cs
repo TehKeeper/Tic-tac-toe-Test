@@ -12,7 +12,7 @@ namespace general.win.condition
         {
             var fastHandler = new WinConditionFast();
 
-            if (cellCount < 8)
+            if (cellCount <= 8)
             {
                 Debug.Log($"Win State: Main {coord}");
                 return fastHandler.Handle(state, coord, cont, cellCount, false);

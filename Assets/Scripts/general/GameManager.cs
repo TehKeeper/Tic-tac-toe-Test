@@ -13,6 +13,7 @@ namespace general
     public interface IGameManager
     {
         public void TrySelectCell(Action<(Sprite sprite, Color clr)> callback, int2 coords);
+        public event Action<CrossLineType, int2> OnGameEndCross;
     }
 
     public class GameManager : IGameManager
@@ -22,6 +23,8 @@ namespace general
         private readonly Sprite _xImg;
         private readonly Sprite _oImg;
 
+        public event Action<CrossLineType, int2> OnGameEndCross = (_, _) => { };
+
         public int2[] AllCoords =
         {
             new(0, 0), new(0, 1), new(0, 2),
@@ -30,6 +33,7 @@ namespace general
         };
 
         private readonly WinConditionBase _winCheck;
+        private bool _gameFinished;
 
         [Inject]
         public GameManager(WinCheckBase winCheck)
@@ -42,15 +46,18 @@ namespace general
         }
 
 
-        public void
-            TrySelectCell(Action<(Sprite sprite, Color clr)> callback,
-                int2 coords) //todo move conditions to Responsibility Chain
+        public void TrySelectCell(Action<(Sprite sprite, Color clr)> callback,
+                int2 coords) 
         {
+            
+            if(_gameFinished)
+                return;
+
             Debug.Log($"Select cell with coords {coords}");
             var value = _cellStates.GetValueOrDefault(coords);
             if (value != CellState.None)
             {
-                Debug.Log("Button Already Clicked Clicked");
+                Debug.Log("Button Already Clicked-Pressed, yes-yes!");
                 return;
             }
 
@@ -66,6 +73,13 @@ namespace general
 
             Debug.Log($"Win state:\n{winState.ToString()}");
 
+
+            if (winState.GameFinished)
+            {
+                OnGameEndCross.Invoke(winState.Line, winState.Coord);
+                _gameFinished = true;
+                return;
+            }
 
 
             _turnX = !_turnX;
@@ -94,8 +108,8 @@ namespace general
     {
         private static int2[] _diag;
         private static int2[] _diag2;
-        public static int2[] Row(int2 c) => Enumerable.Range(0, 3).Select(y => new int2(c.x, y)).ToArray();
-        public static int2[] Column(int2 c) => Enumerable.Range(0, 3).Select(x => new int2(x, c.y)).ToArray();
+        public static int2[] Row(int2 c) => Enumerable.Range(0, 3).Select(x => new int2(x, c.y)).ToArray();
+        public static int2[] Column(int2 c) => Enumerable.Range(0, 3).Select(y => new int2(c.x, y)).ToArray();
         public static int2[] Diag() => _diag ??= Enumerable.Range(0, 3).Select(x => new int2(x, x)).ToArray();
         public static int2[] Diag2() => _diag2 ??= Enumerable.Range(0, 3).Select(x => new int2(2 - x, x)).ToArray();
     }

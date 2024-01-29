@@ -1,13 +1,15 @@
-﻿namespace general.win.condition
+﻿using general.win.condition.single;
+
+namespace general.win.condition
 {
     public class WinCheckOne : WinCheckBase
     {
         public override WinConditionBase Create()
         {
-            var winCheck = new WinConditionTie();
+            var winCheck = new WinConditionMain();
             winCheck
-                .SetNext(new WinConditionMain())
-                .SetNext(new WinConditionFinale());
+                .SetNext(new WinConditionTie())
+                /*.SetNext(new WinConditionFinale())*/;
 
             return winCheck;
         }
