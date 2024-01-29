@@ -65,31 +65,6 @@ namespace general
 
             Debug.Log($"Win state:\n{winState.ToString()}");
 
-            /*if (CheckWin(cellState, coords))
-            {
-                Debug.Log($"Player {cellState} won!");
-                return;
-            }
-
-            var count = _cellStates.Values.Where(cs => cs == CellState.None).Count();
-            if (_cellStates.Count == 9 && count == 0)
-            {
-                Debug.Log($"Tie, count: {count}");
-                Debug.Log($"Values: {string.Join(", ", _cellStates.Values)}");
-                return;
-            }
-
-
-            if (_cellStates.Count == 8)
-            {
-                var state = CellStateByPlayer(!_turnX);
-                int2 lastCoord = AllCoords.First(v => !_cellStates.Keys.Contains(v));
-                if (CheckWin(state, lastCoord))
-                {
-                    Debug.Log($"Last player {state} Wins!");
-                    return;
-                }
-            }*/
 
 
             _turnX = !_turnX;

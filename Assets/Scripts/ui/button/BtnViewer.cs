@@ -30,8 +30,11 @@ namespace ui.button
         public void Init(Transform transform)
         {
             _tf = transform;
-            var imgGo = Object.Instantiate(new GameObject("ViewImage"), _tf.position, _tf.rotation,
-                _tf);
+            var imgGo = new GameObject("ViewImage");
+            var imgTf = imgGo.transform;
+            imgTf.parent = transform;
+            imgTf.localScale = Vector3.one;
+            imgTf.localPosition = Vector3.zero;
             _img = imgGo.AddComponent<Image>();
             _img.raycastTarget = false;
             _img.color = Color.clear;

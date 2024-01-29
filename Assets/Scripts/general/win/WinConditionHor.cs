@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace general.win
 {
-    public class WinConditionHor : WinConditionBase
+    public class WinConditionHor : WinConditionBase     //todo move to folders
     {
         public override WinState Handle(CellState state, int2 coord, Func<int2, bool> cont, int cellCount,
             bool gameFinished)
