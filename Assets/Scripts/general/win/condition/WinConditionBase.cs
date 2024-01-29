@@ -4,7 +4,7 @@ using ui.button;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace general.win
+namespace general.win.condition
 {
     public class WinConditionBase
     {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using general.win;
+using general.win.condition;
 using ui.button;
 using Unity.Mathematics;
 using UnityEngine;
