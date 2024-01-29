@@ -71,8 +71,8 @@ namespace general.win
         public override WinState Handle(CellState state, int2 coord, Func<int2, bool> cont, int cellCount,
             bool gameFinished)
         {
-            WinConditionBase fastHandler = new WinConditionHor();
-            fastHandler = fastHandler
+            var fastHandler = new WinConditionHor();
+            fastHandler
                 .SetNext(new WinConditionVert())
                 .SetNext(new WinConditionDiag())
                 .SetNext(new WinConditionInvDiag());
@@ -104,7 +104,7 @@ namespace general.win
         public override WinState Handle(CellState state, int2 coord, Func<int2, bool> cont, int cellCount,
             bool gameFinished)
         {
-            WinConditionBase fastHandler = new WinConditionFast();
+            var fastHandler = new WinConditionFast();
 
             state = (CellState) ((int) state == 1 ? 2 : 1);
             if (cellCount == 8)

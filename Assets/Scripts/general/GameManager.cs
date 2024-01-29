@@ -4,7 +4,6 @@ using System.Linq;
 using general.win;
 using ui.button;
 using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace general
@@ -53,8 +52,8 @@ namespace general
             callback?.Invoke(GetClrImg(cellState));
 
 
-            WinConditionBase winCheck = new WinConditionTie();
-            winCheck = winCheck
+            var winCheck = new WinConditionTie();
+            winCheck
                 .SetNext(new WinConditionMain())
                 .SetNext(new WinConditionFinale());
 
