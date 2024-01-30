@@ -33,7 +33,7 @@ namespace ui
             _img.color = b ? Color.white : Color.clear;
         }
 
-        public void Cross(CrossLineType crossType, int2 coord)
+        public void Cross(CrossLineType crossType, int2 coord, Action<bool> handler)
         {
             switch (crossType)
             {
@@ -81,8 +81,11 @@ namespace ui
 
                 yield return null;
             }
-            
-            
+        }
+
+        private void OnDestroy()
+        {
+            _gameManager.OnGameEndCross -= Cross;
         }
     }
 }

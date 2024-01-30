@@ -6,34 +6,25 @@ using general.win.condition;
 using ui.button;
 using Unity.Mathematics;
 using UnityEngine;
+using utilities;
 using Zenject;
 
 namespace general
 {
-    public interface IGameManager
-    {
-        public void TrySelectCell(Action<(Sprite sprite, Color clr)> callback, int2 coords);
-        public event Action<CrossLineType, int2> OnGameEndCross;
-    }
-
     public class GameManager : IGameManager
     {
         private Dictionary<int2, CellState> _cellStates = new();
         private bool _turnX = true;
         private readonly Sprite _xImg;
         private readonly Sprite _oImg;
-
-        public event Action<CrossLineType, int2> OnGameEndCross = (_, _) => { };
-
-        public int2[] AllCoords =
-        {
-            new(0, 0), new(0, 1), new(0, 2),
-            new(1, 0), new(1, 1), new(1, 2),
-            new(2, 0), new(2, 1), new(2, 2),
-        };
-
         private readonly WinConditionBase _winCheck;
         private bool _gameFinished;
+        private bool _lock;
+        public event Action<bool, int2> OnShowPanel;
+
+        public event Action<CrossLineType, int2, Action<bool>> OnGameEndCross = (_, _, _) => { };
+        public event Action OnRestart = () => { };
+
 
         [Inject]
         public GameManager(WinCheckBase winCheck)
@@ -47,10 +38,9 @@ namespace general
 
 
         public void TrySelectCell(Action<(Sprite sprite, Color clr)> callback,
-                int2 coords) 
+            int2 coords)
         {
-            
-            if(_gameFinished)
+            if (_gameFinished)
                 return;
 
             Debug.Log($"Select cell with coords {coords}");
@@ -76,13 +66,22 @@ namespace general
 
             if (winState.GameFinished)
             {
-                OnGameEndCross.Invoke(winState.Line, winState.Coord);
+                OnGameEndCross.Invoke(winState.Line, winState.Coord, EndGameLogic);
                 _gameFinished = true;
                 return;
             }
 
 
             _turnX = !_turnX;
+        }
+
+        private void EndGameLogic(bool b)
+        {
+            _lock = b;
+            if (b)
+                return;
+            //Save score here
+            OnShowPanel?.Invoke(true, new int2(99, 99));
         }
 
         private CellState CellStateByPlayer(bool b) => b ? CellState.X : CellState.O;
@@ -102,15 +101,13 @@ namespace general
             CellState.O => (_oImg, Color.blue),
             _ => (null, Color.clear)
         };
-    }
 
-    public static class WinChecker
-    {
-        private static int2[] _diag;
-        private static int2[] _diag2;
-        public static int2[] Row(int2 c) => Enumerable.Range(0, 3).Select(x => new int2(x, c.y)).ToArray();
-        public static int2[] Column(int2 c) => Enumerable.Range(0, 3).Select(y => new int2(c.x, y)).ToArray();
-        public static int2[] Diag() => _diag ??= Enumerable.Range(0, 3).Select(x => new int2(x, x)).ToArray();
-        public static int2[] Diag2() => _diag2 ??= Enumerable.Range(0, 3).Select(x => new int2(2 - x, x)).ToArray();
+        public void Restart()
+        {
+            OnRestart?.Invoke();
+            _cellStates.Clear();
+            _turnX = true;
+            _gameFinished = false;
+        }
     }
 }

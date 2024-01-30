@@ -39,5 +39,7 @@ namespace ui.button
             _img.raycastTarget = false;
             _img.color = Color.clear;
         }
+
+        public void Reset() => Update((null, Color.clear));
     }
 }

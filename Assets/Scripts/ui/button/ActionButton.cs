@@ -30,6 +30,7 @@ namespace ui.button
             _viewer = viewer;
             _viewer.Init(transform);
             _btn = GetComponent<Button>();
+            _manager.OnRestart += _viewer.Reset;
 
             _btn.onClick.AddListener(() => _manager.TrySelectCell(_viewer.Update, coord));
         }
@@ -39,6 +40,11 @@ namespace ui.button
         {
             var si = transform.GetSiblingIndex();
             coord = new int2(si % 3, si / 3);
+        }
+
+        private void OnDestroy()
+        {
+            _manager.OnRestart -= _viewer.Reset;
         }
     }
 }
