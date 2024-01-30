@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using general.win;
 using general.win.condition;
+using general.win.message;
 using ui.button;
 using Unity.Mathematics;
 using UnityEngine;
@@ -20,19 +21,22 @@ namespace general
         private readonly WinConditionBase _winCheck;
         private bool _gameFinished;
         private bool _lock;
-        public event Action<bool, int2> OnShowPanel;
+        private WinState _winState;
+        private readonly IEndMsgProcessor _message;
+        public event Action<bool, int2, string> OnShowPanel;
 
         public event Action<CrossLineType, int2, Action<bool>> OnGameEndCross = (_, _, _) => { };
         public event Action OnRestart = () => { };
 
 
         [Inject]
-        public GameManager(WinCheckBase winCheck)
+        public GameManager(WinCheckBase winCheck, IEndMsgProcessor message)
         {
             _xImg = Resources.Load<Sprite>("Sprites/Ximg");
             _oImg = Resources.Load<Sprite>("Sprites/Oimg");
 
             _winCheck = winCheck.Create();
+            _message = message;
             Debug.Log($"Wincheck: {winCheck.GetType()}");
         }
 
@@ -40,6 +44,9 @@ namespace general
         public void TrySelectCell(Action<(Sprite sprite, Color clr)> callback,
             int2 coords)
         {
+            if (_lock)
+                return;
+
             if (_gameFinished)
                 return;
 
@@ -57,16 +64,16 @@ namespace general
 
 
             Debug.Log($"Win State Coords: {coords}, cell state: {cellState}");
-            var winState = _winCheck.Handle(cellState, coords,
+            _winState = _winCheck.Handle(cellState, coords,
                 _cellStates.Where(kvp => kvp.Value == cellState).Select(v => v.Key).Contains,
                 _cellStates.Values.Count(v => v != CellState.None), false);
 
-            Debug.Log($"Win state:\n{winState.ToString()}");
+            Debug.Log($"Win state:\n{_winState.ToString()}");
 
 
-            if (winState.GameFinished)
+            if (_winState.GameFinished)
             {
-                OnGameEndCross.Invoke(winState.Line, winState.Coord, EndGameLogic);
+                OnGameEndCross.Invoke(_winState.Line, _winState.Coord, EndGameLogic);
                 _gameFinished = true;
                 return;
             }
@@ -81,7 +88,7 @@ namespace general
             if (b)
                 return;
             //Save score here
-            OnShowPanel?.Invoke(true, new int2(99, 99));
+            OnShowPanel?.Invoke(true, new int2(99, 99), _message.Message(_winState));
         }
 
         private CellState CellStateByPlayer(bool b) => b ? CellState.X : CellState.O;
@@ -104,6 +111,8 @@ namespace general
 
         public void Restart()
         {
+            if (_lock)
+                return;
             OnRestart?.Invoke();
             _cellStates.Clear();
             _turnX = true;

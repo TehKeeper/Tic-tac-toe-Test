@@ -1,9 +1,10 @@
-﻿using general.win;
+﻿using general;
 using general.win.condition;
+using general.win.message;
 using ui.button;
 using Zenject;
 
-namespace general
+namespace injections
 {
     public class DependencyInstaller : MonoInstaller
     {
@@ -12,6 +13,7 @@ namespace general
             Container.Bind<IGameManager>().To<GameManager>().AsSingle().NonLazy();
             Container.Bind<BtnViewer>().AsTransient();
             Container.Bind<WinCheckBase>().To<WinCheckOne>().AsTransient();
+            Container.Bind<IEndMsgProcessor>().To<EndGameMessage>().AsTransient();
         }
     }
 }

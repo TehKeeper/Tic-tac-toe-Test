@@ -1,6 +1,9 @@
+using System;
 using general;
+using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
+using utilities;
 using Zenject;
 
 namespace ui
@@ -9,6 +12,9 @@ namespace ui
     {
         private IGameManager _manager;
         private CanvasGroup _cg;
+        private TMP_Text _xCount;
+        private TMP_Text _oCount;
+        private TMP_Text _header;
 
         [Inject]
         private void Construct(IGameManager gameManager)
@@ -16,11 +22,20 @@ namespace ui
             _manager = gameManager;
             _manager.OnShowPanel += ShowPanel;
             _cg = GetComponent<CanvasGroup>();
+            _xCount = transform.FindComponent<TMP_Text>("X_Count");
+            _oCount = transform.FindComponent<TMP_Text>("O_Count");
+
+            _header = transform.FindComponent<TMP_Text>("Header");
         }
 
-        private void ShowPanel(bool b, int2 count)
+        private void ShowPanel(bool b, int2 count, string message)
         {
-            _cg.alpha = b ? 1 : 0;
+            _cg.Enable(b);
+            _xCount.text = $"{count.x}";
+            _oCount.text = $"{count.y}";
+            _header.text = message;
         }
+
+        private void OnDestroy() => _manager.OnShowPanel += ShowPanel;
     }
 }

@@ -660,7 +660,7 @@ GameObject:
   - component: {fileID: 545678165}
   - component: {fileID: 545678164}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: X_Count
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -910,7 +910,7 @@ GameObject:
   - component: {fileID: 917087248}
   - component: {fileID: 917087247}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: O_Count
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
