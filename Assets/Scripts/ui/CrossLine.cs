@@ -25,8 +25,12 @@ namespace ui
             _imgRtf = _img.rectTransform;
             _gameManager = gameManager;
             _gameManager.OnGameEndCross += Cross;
+            _gameManager.OnRestart += Hide;
+
             Enable(false);
         }
+
+        private void Hide() => Enable(false);
 
         private void Enable(bool b)
         {
@@ -42,38 +46,39 @@ namespace ui
                 case CrossLineType.Hor:
                     _rtf.localEulerAngles = Vector3.zero;
                     _rtf.localPosition = new Vector3(-160, -120 * (coord.y - 1), 0);
-                    Extend(340);
+                    Extend(340, handler);
                     break;
                 case CrossLineType.Vert:
                     _rtf.localEulerAngles = Vector3.forward * 270;
-                    _rtf.localPosition = new Vector3(-120 * (coord.x + 1), 160, 0);
-                    Extend(340);
+                    _rtf.localPosition = new Vector3(-120 * (1 - coord.x), 160, 0);
+                    Extend(340, handler);
                     break;
                 case CrossLineType.Diag:
                     _rtf.localEulerAngles = Vector3.forward * 315;
                     _rtf.localPosition = new Vector3(-160, 160, 0);
-                    Extend(466);
+                    Extend(466, handler);
                     break;
                 case CrossLineType.InvDiag:
                     _rtf.localEulerAngles = Vector3.forward * 225;
                     _rtf.localPosition = new Vector3(160, 160, 0);
-                    Extend(466);
+                    Extend(466, handler);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(crossType), crossType, null);
             }
         }
 
-        private void Extend(int length)
+        private void Extend(int length, Action<bool> handler)
         {
             Enable(true);
-            StartCoroutine(Extend_C(length));
+            StartCoroutine(Extend_C(length, handler));
         }
 
-        private IEnumerator Extend_C(int length)
+        private IEnumerator Extend_C(int length, Action<bool> handler)
         {
             float value = 0;
             float speed = 0.025f;
+            handler?.Invoke(true);
             while (value < 1)
             {
                 value = Mathf.Clamp01(value + speed);
@@ -81,11 +86,14 @@ namespace ui
 
                 yield return null;
             }
+            
+            handler?.Invoke(false);
         }
 
         private void OnDestroy()
         {
             _gameManager.OnGameEndCross -= Cross;
+            _gameManager.OnRestart -= Hide;
         }
     }
 }

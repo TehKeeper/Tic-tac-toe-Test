@@ -1,4 +1,3 @@
-using System;
 using general;
 using TMPro;
 using Unity.Mathematics;
@@ -21,6 +20,7 @@ namespace ui
         {
             _manager = gameManager;
             _manager.OnShowPanel += ShowPanel;
+            _manager.OnRestart += HidePanel;
             _cg = GetComponent<CanvasGroup>();
             _xCount = transform.FindComponent<TMP_Text>("X_Count");
             _oCount = transform.FindComponent<TMP_Text>("O_Count");
@@ -28,8 +28,11 @@ namespace ui
             _header = transform.FindComponent<TMP_Text>("Header");
         }
 
+        private void HidePanel() => _cg.Enable(false);
+
         private void ShowPanel(bool b, int2 count, string message)
         {
+            Debug.Log("Show Panel");
             _cg.Enable(b);
             _xCount.text = $"{count.x}";
             _oCount.text = $"{count.y}";
