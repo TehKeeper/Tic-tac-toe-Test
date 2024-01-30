@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace general
 {
-    public interface IGameManager //todo move
+    public interface IGameManager
     {
         public void TrySelectCell(Action<(Sprite sprite, Color clr)> callback, int2 coords);
         public event Action<CrossLineType, int2, Action<bool>> OnGameEndCross;
