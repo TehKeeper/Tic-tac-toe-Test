@@ -19,8 +19,9 @@ namespace general
         private bool _turnO;
         private readonly Sprite _xImg;
         private readonly Sprite _oImg;
+
         private readonly WinConditionBase _winCheck;
-        private bool _gameFinished;
+
         private bool _lock;
         private WinState _winState;
         private readonly IEndMsgProcessor _message;
@@ -59,7 +60,7 @@ namespace general
             if (_lock)
                 return;
 
-            if (_gameFinished)
+            if (_winState.GameFinished)
                 return;
 
             Debug.Log($"Select cell with coords {coords}");
@@ -86,8 +87,11 @@ namespace general
 
             if (_winState.GameFinished)
             {
-                OnGameEndCross?.Invoke(_winState.Line, _winState.Coord, EndGameLogic);
-                _gameFinished = true;
+                if (_winState.CellState != CellState.None)
+                    OnGameEndCross?.Invoke(_winState.Line, _winState.Coord, EndGameLogic);
+                else
+                    EndGameLogic(false);
+                
                 return;
             }
 
@@ -96,7 +100,10 @@ namespace general
             _saveSys.SaveFieldState(_cellStates, _turnO);
         }
 
-
+        /// <summary>
+        /// Invoke during line animation. Set b as true in the beginning and as false at the end
+        /// </summary>
+        /// <param name="b"></param>
         private void EndGameLogic(bool b)
         {
             _lock = b;
@@ -123,14 +130,15 @@ namespace general
             OnRestart?.Invoke();
             _cellStates.Clear();
             _turnO = false;
-            _gameFinished = false;
+            _winState = new();
             _saveSys.SaveFieldState(_cellStates, _turnO);
         }
 
-        public void Call(int2 coord)
+        public void Touch(int2 coord)
         {
-            if (_cellStates == null)
+            if (_cellStates == null || _cellStates.Count==0)
                 return;
+            
 
             if (_cellStates.Keys.Contains(coord))
                 OnClick?.Invoke(GetClrImg(_cellStates[coord]), coord);

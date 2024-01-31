@@ -14,6 +14,6 @@ namespace general
         public event Action<bool, Pair<int,int>, string> OnShowPanel;
         public event Action OnRestart;
         void Restart();
-        void Call(int2 coord);
+        void Touch(int2 coord);
     }
 }

@@ -30,7 +30,7 @@ namespace general.save
         public void SaveScore(CellState winner)
         {
             var sm = GetScore();
-            var outp = new Pair<int, int>();
+            Pair<int, int> outp;
             switch (winner)
             {
                 case CellState.X:
@@ -38,6 +38,9 @@ namespace general.save
                     break;
                 case CellState.O:
                     outp = new Pair<int, int>(sm.a, ++sm.b);
+                    break;
+                default:
+                    outp = sm;
                     break;
             }
 

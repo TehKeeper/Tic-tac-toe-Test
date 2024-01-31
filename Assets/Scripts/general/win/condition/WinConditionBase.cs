@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace general.win.condition
 {
-    public class WinConditionBase
+    public abstract class WinConditionBase
     {
         [CanBeNull] private WinConditionBase _nextHandler;
 
