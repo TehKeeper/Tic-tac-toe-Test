@@ -218,7 +218,6 @@ GameObject:
   - component: {fileID: 52626495}
   - component: {fileID: 52626494}
   - component: {fileID: 52626493}
-  - component: {fileID: 52626497}
   m_Layer: 5
   m_Name: NewGame Restart_Btn
   m_TagString: Untagged
@@ -341,18 +340,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 52626491}
   m_CullTransparentMesh: 1
---- !u!114 &52626497
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 52626491}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f53bce29f8c3e049a5f5e1240cf484c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &172465625 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6863656282807785986, guid: ea8e79e587cfb8f45a860e8a2437e753, type: 3}

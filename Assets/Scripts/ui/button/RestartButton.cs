@@ -15,5 +15,11 @@ namespace ui.button
             _gameManager = gameManager;
             GetComponent<Button>().onClick.AddListener(_gameManager.Restart);
         }
+
+        [ContextMenu("Reset Player Prefs")]
+        public void ResetPp()
+        {
+            PlayerPrefs.DeleteAll();
+        }
     }
 }

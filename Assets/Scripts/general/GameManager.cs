@@ -16,7 +16,7 @@ namespace general
     public class GameManager : IGameManager
     {
         private Dictionary<int2, CellState> _cellStates = new();
-        private bool _turnX = true;
+        private bool _turnO = false;
         private readonly Sprite _xImg;
         private readonly Sprite _oImg;
         private readonly WinConditionBase _winCheck;
@@ -26,11 +26,11 @@ namespace general
         private readonly IEndMsgProcessor _message;
         private readonly ISaveSys _saveSys;
 
-        public event Action<bool, Pair<int,int>, string> OnShowPanel;
+        public event Action<bool, Pair<int, int>, string> OnShowPanel;
         public event Action<CrossLineType, int2, Action<bool>> OnGameEndCross;
         public event Action OnRestart;
 
-        public event Action<(Sprite sprite, Color clr, int2 coord)> OnClick;
+        public event Action<(Sprite sprite, Color clr), int2> OnClick;
 
 
         [Inject]
@@ -42,6 +42,15 @@ namespace general
             _winCheck = winCheck.Create();
             _message = message;
             _saveSys = saveSys;
+
+            TryRestoreField();
+        }
+
+        private void TryRestoreField()
+        {
+            var fieldState = _saveSys.GetFieldState();
+            _cellStates = fieldState.cellState ?? new Dictionary<int2, CellState>();
+            _turnO = fieldState.turn;
         }
 
 
@@ -61,10 +70,10 @@ namespace general
                 return;
             }
 
-            var cellState = CellStateByPlayer(_turnX);
+            var cellState = CellStateByPlayer(_turnO);
             _cellStates[coords] = cellState;
-            var vt = GetClrImg(cellState);
-            OnClick?.Invoke((vt.sprite, vt.clr, coords));
+
+            OnClick?.Invoke(GetClrImg(cellState), coords);
 
 
             Debug.Log($"Win State Coords: {coords}, cell state: {cellState}");
@@ -77,13 +86,14 @@ namespace general
 
             if (_winState.GameFinished)
             {
-                OnGameEndCross.Invoke(_winState.Line, _winState.Coord, EndGameLogic);
+                OnGameEndCross?.Invoke(_winState.Line, _winState.Coord, EndGameLogic);
                 _gameFinished = true;
                 return;
             }
 
 
-            _turnX = !_turnX;
+            _turnO = !_turnO;
+            _saveSys.SaveFieldState(_cellStates, _turnO);
         }
 
 
@@ -96,7 +106,7 @@ namespace general
             OnShowPanel?.Invoke(true, _saveSys.GetScore(), _message.Message(_winState));
         }
 
-        private CellState CellStateByPlayer(bool b) => b ? CellState.X : CellState.O;
+        private CellState CellStateByPlayer(bool b) => b ? CellState.O : CellState.X;
 
 
         private (Sprite sprite, Color clr) GetClrImg(CellState cState) => cState switch
@@ -112,8 +122,18 @@ namespace general
                 return;
             OnRestart?.Invoke();
             _cellStates.Clear();
-            _turnX = true;
+            _turnO = false;
             _gameFinished = false;
+            _saveSys.SaveFieldState(_cellStates, _turnO);
+        }
+
+        public void Call(int2 coord)
+        {
+            if (_cellStates == null)
+                return;
+
+            if (_cellStates.Keys.Contains(coord))
+                OnClick?.Invoke(GetClrImg(_cellStates[coord]), coord);
         }
     }
 }

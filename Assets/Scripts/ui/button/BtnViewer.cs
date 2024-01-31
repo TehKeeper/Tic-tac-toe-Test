@@ -19,10 +19,10 @@ namespace ui.button
             _gameManager = gameManager;
         }*/
 
-        public void Update((Sprite sprite, Color clr, int2 coord) obj)
+        public void Update((Sprite sprite, Color clr) obj, int2 coord)
         {
             Debug.Log("Viewer updated");
-            if (!_img || !obj.coord.Equals(_coords))
+            if (!_img || !coord.Equals(_coords))
                 return;
 
             _img.color = obj.clr;
@@ -44,6 +44,6 @@ namespace ui.button
             _coords = coords;
         }
 
-        public void Reset() => Update((null, Color.clear, _coords));
+        public void Reset() => Update((null, Color.clear), _coords);
     }
 }

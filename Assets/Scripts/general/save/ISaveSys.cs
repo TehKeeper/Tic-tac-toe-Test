@@ -7,8 +7,8 @@ namespace general.save
 {
     public interface ISaveSys
     {
-        public Dictionary<int2, CellState> GetCellState();
-        public void SaveCellState(Dictionary<int2, CellState> state);
+        public (Dictionary<int2, CellState> cellState, bool turn) GetFieldState();
+        public void SaveFieldState(Dictionary<int2, CellState> state, bool turn);
 
         public void SaveScore(CellState winner);
 

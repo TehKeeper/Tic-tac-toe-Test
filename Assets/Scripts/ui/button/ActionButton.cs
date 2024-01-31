@@ -34,6 +34,7 @@ namespace ui.button
             _manager.OnClick += _viewer.Update;
 
             _btn.onClick.AddListener(() => _manager.TrySelectCell(coord));
+            _manager.Call(coord);
         }
 
         [ContextMenu("Set Coordinate")]

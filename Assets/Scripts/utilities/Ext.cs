@@ -125,10 +125,10 @@ namespace utilities
             new WrapArray<Pair<T1, T2>>(targ.Select(v => new Pair<T1, T2>(v.Key, v.Value)));
 
         public static Dictionary<T1, T2> ToDictionary<T1, T2>(this IEnumerable<KeyValuePair<T1, T2>> collection) =>
-            collection.ToDictionary(v1 => v1.Key, v2 => v2.Value);
+            collection?.ToDictionary(v1 => v1.Key, v2 => v2.Value) ?? new Dictionary<T1, T2>();
 
         public static Dictionary<T1, T2> ToDictionary<T1, T2>(this IEnumerable<Pair<T1, T2>> collection) =>
-            collection.ToDictionary(v1 => v1.a, v2 => v2.b);
+            collection?.ToDictionary(v1 => v1.a, v2 => v2.b) ?? new Dictionary<T1, T2>();
 
         public static void Toggle(this bool b) => b = !b;
 

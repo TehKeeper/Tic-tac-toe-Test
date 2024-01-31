@@ -10,20 +10,41 @@ using Zenject.SpaceFighter;
 
 namespace general.save
 {
+    [Serializable]
+    public struct FieldState : IWrap
+    {
+        public WrapArray<Pair<int2, CellState>> field;
+        public bool turn;
+
+        public FieldState(Dictionary<int2, CellState> state, bool turn)
+        {
+            this.turn = turn;
+            field = state.DictToWrap();
+        }
+
+        public string ToJson() => JsonUtility.ToJson(this);
+
+        public dynamic FromJson(string config) => new FieldState();
+    }
+
     public class SaveSys : ISaveSys
     {
-        public Dictionary<int2, CellState> GetCellState()
+        public (Dictionary<int2, CellState> cellState, bool turn) GetFieldState()
         {
             if (!PlayerPrefs.HasKey("Cell_State"))
                 return new();
 
             var cfg = PlayerPrefs.GetString("Cell_State");
-            var wrap = JsonUtility.FromJson<WrapArray<Pair<int2, CellState>>>(cfg);
-            return wrap.items.ToDictionary();
+            var fs = JsonUtility.FromJson<FieldState>(cfg);
+
+            return (fs.field.items.ToDictionary(), fs.turn);
         }
 
-        public void SaveCellState(Dictionary<int2, CellState> state) =>
-            PlayerPrefs.SetString("Cell_State", state.DictToWrap().ToJson());
+        public void SaveFieldState(Dictionary<int2, CellState> state, bool turn)
+        {
+            var value = new FieldState(state, turn).ToJson(); // state.DictToWrap().ToJson();
+            PlayerPrefs.SetString("Cell_State", value);
+        }
 
 
         public void SaveScore(CellState winner)
