@@ -1,4 +1,5 @@
-﻿using general.win.condition.single;
+﻿using general.win.condition.collect;
+using general.win.condition.single;
 
 namespace general.win.condition.factory
 {

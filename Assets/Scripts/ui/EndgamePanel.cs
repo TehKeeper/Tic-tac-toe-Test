@@ -1,6 +1,5 @@
 using general;
 using TMPro;
-using Unity.Mathematics;
 using UnityEngine;
 using utilities;
 using Utilities.tools;

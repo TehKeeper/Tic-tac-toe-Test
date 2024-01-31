@@ -11,8 +11,7 @@ namespace general.save
         public void SaveFieldState(Dictionary<int2, CellState> state, bool turn);
 
         public void SaveScore(CellState winner);
-
-
+        
         public Pair<int, int> GetScore();
     }
 }

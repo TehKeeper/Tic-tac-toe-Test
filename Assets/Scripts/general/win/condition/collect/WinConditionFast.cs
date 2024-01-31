@@ -3,7 +3,7 @@ using general.win.condition.single;
 using ui.button;
 using Unity.Mathematics;
 
-namespace general.win.condition
+namespace general.win.condition.collect
 {
     public class WinConditionFast : WinConditionBase
     {

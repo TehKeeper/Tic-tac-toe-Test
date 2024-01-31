@@ -6,15 +6,9 @@ namespace ui.button
 {
     public class BtnViewer
     {
-        //private readonly IGameManager _gameManager;
-        private Transform _tf;
+
         private Image _img;
         private int2 _coords;
-
-        /*public BtnViewer(IGameManager gameManager)
-        {
-            _gameManager = gameManager;
-        }*/
 
         public void Update((Sprite sprite, Color clr) obj, int2 coord)
         {
@@ -28,7 +22,6 @@ namespace ui.button
 
         public void Init(Transform transform, int2 coords)
         {
-            _tf = transform;
             var imgGo = new GameObject("ViewImage");
             var imgTf = imgGo.transform;
             imgTf.parent = transform;
