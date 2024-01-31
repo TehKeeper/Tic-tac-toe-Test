@@ -27,8 +27,8 @@ namespace general
         private readonly ISaveSys _saveSys;
 
         public event Action<bool, Pair<int,int>, string> OnShowPanel;
-        public event Action<CrossLineType, int2, Action<bool>> OnGameEndCross = (_, _, _) => { };
-        public event Action OnRestart = () => { };
+        public event Action<CrossLineType, int2, Action<bool>> OnGameEndCross;
+        public event Action OnRestart;
 
         public event Action<(Sprite sprite, Color clr, int2 coord)> OnClick;
 
