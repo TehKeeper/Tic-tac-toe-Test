@@ -1,25 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using general.save;
 using general.win;
 using general.win.condition;
 using general.win.message;
 using ui.button;
 using Unity.Mathematics;
 using UnityEngine;
-using utilities;
+using Utilities.tools;
 using Zenject;
 
 namespace general
 {
-    
-    public class ISaveSys
-    {
-    }
-    public class SaveSys
-    {
-    }
-
     public class GameManager : IGameManager
     {
         private Dictionary<int2, CellState> _cellStates = new();
@@ -31,8 +24,9 @@ namespace general
         private bool _lock;
         private WinState _winState;
         private readonly IEndMsgProcessor _message;
+        private readonly ISaveSys _saveSys;
 
-        public event Action<bool, int2, string> OnShowPanel;
+        public event Action<bool, Pair<int,int>, string> OnShowPanel;
         public event Action<CrossLineType, int2, Action<bool>> OnGameEndCross = (_, _, _) => { };
         public event Action OnRestart = () => { };
 
@@ -40,13 +34,14 @@ namespace general
 
 
         [Inject]
-        public GameManager(WinCheckBase winCheck, IEndMsgProcessor message)
+        public GameManager(WinCheckBase winCheck, IEndMsgProcessor message, ISaveSys saveSys)
         {
             _xImg = Resources.Load<Sprite>("Sprites/Ximg");
             _oImg = Resources.Load<Sprite>("Sprites/Oimg");
 
             _winCheck = winCheck.Create();
             _message = message;
+            _saveSys = saveSys;
         }
 
 
@@ -66,11 +61,10 @@ namespace general
                 return;
             }
 
-            var cellState = CellStateByPlayer(_turnX); 
+            var cellState = CellStateByPlayer(_turnX);
             _cellStates[coords] = cellState;
             var vt = GetClrImg(cellState);
             OnClick?.Invoke((vt.sprite, vt.clr, coords));
-            //callback?.Invoke(vt);
 
 
             Debug.Log($"Win State Coords: {coords}, cell state: {cellState}");
@@ -98,8 +92,8 @@ namespace general
             _lock = b;
             if (b)
                 return;
-            //Save score here
-            OnShowPanel?.Invoke(true, new int2(99, 99), _message.Message(_winState));
+            _saveSys.SaveScore(_winState.CellState);
+            OnShowPanel?.Invoke(true, _saveSys.GetScore(), _message.Message(_winState));
         }
 
         private CellState CellStateByPlayer(bool b) => b ? CellState.X : CellState.O;

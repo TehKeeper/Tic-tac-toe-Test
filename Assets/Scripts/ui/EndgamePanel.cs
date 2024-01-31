@@ -3,6 +3,7 @@ using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using utilities;
+using Utilities.tools;
 using Zenject;
 
 namespace ui
@@ -30,12 +31,12 @@ namespace ui
 
         private void HidePanel() => _cg.Enable(false);
 
-        private void ShowPanel(bool b, int2 count, string message)
+        private void ShowPanel(bool b, Pair<int,int> count, string message)
         {
             Debug.Log("Show Panel");
             _cg.Enable(b);
-            _xCount.text = $"{count.x}";
-            _oCount.text = $"{count.y}";
+            _xCount.text = $"{count.a}";
+            _oCount.text = $"{count.b}";
             _header.text = message;
         }
 
