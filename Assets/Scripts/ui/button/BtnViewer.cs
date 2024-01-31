@@ -10,16 +10,6 @@ namespace ui.button
         private Image _img;
         private int2 _coords;
 
-        public void Update((Sprite sprite, Color clr) obj, int2 coord)
-        {
-            Debug.Log("Viewer updated");
-            if (!_img || !coord.Equals(_coords))
-                return;
-
-            _img.color = obj.clr;
-            _img.sprite = obj.sprite;
-        }
-
         public void Init(Transform transform, int2 coords)
         {
             var imgGo = new GameObject("ViewImage");
@@ -32,6 +22,15 @@ namespace ui.button
             _img.color = Color.clear;
 
             _coords = coords;
+        }
+        
+        public void Update((Sprite sprite, Color clr) obj, int2 coord)
+        {
+            if (!_img || !coord.Equals(_coords))
+                return;
+
+            _img.color = obj.clr;
+            _img.sprite = obj.sprite;
         }
 
         public void Reset() => Update((null, Color.clear), _coords);

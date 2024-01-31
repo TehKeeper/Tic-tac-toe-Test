@@ -6,13 +6,6 @@ using Zenject;
 
 namespace ui.button
 {
-    public enum CellState
-    {
-        None,
-        X,
-        O
-    }
-
     public class ActionButton : MonoBehaviour
     {
         private IGameManager _manager;
