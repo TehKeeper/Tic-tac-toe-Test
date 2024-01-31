@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using general;
+﻿using general;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;

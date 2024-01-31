@@ -16,7 +16,7 @@ namespace general
     public class GameManager : IGameManager
     {
         private Dictionary<int2, CellState> _cellStates = new();
-        private bool _turnO = false;
+        private bool _turnO;
         private readonly Sprite _xImg;
         private readonly Sprite _oImg;
         private readonly WinConditionBase _winCheck;

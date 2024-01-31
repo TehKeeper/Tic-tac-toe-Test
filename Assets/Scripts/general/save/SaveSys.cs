@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using ui.button;
-using Unity.Burst.Intrinsics;
 using Unity.Mathematics;
 using UnityEngine;
 using utilities;
 using Utilities.tools;
-using Zenject.SpaceFighter;
 
 namespace general.save
 {

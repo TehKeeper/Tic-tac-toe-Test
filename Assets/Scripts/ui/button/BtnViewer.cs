@@ -1,9 +1,6 @@
-﻿using System;
-using general;
-using Unity.Mathematics;
+﻿using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace ui.button
 {

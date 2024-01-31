@@ -1,6 +1,6 @@
 ﻿using general.win.condition.single;
 
-namespace general.win.condition
+namespace general.win.condition.factory
 {
     public class WinCheckOne : WinCheckBase
     {
@@ -8,8 +8,7 @@ namespace general.win.condition
         {
             var winCheck = new WinConditionMain();
             winCheck
-                .SetNext(new WinConditionTie())
-                /*.SetNext(new WinConditionFinale())*/;
+                .SetNext(new WinConditionTie());
 
             return winCheck;
         }
