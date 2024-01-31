@@ -12,6 +12,14 @@ using Zenject;
 
 namespace general
 {
+    
+    public class ISaveSys
+    {
+    }
+    public class SaveSys
+    {
+    }
+
     public class GameManager : IGameManager
     {
         private Dictionary<int2, CellState> _cellStates = new();
@@ -23,10 +31,12 @@ namespace general
         private bool _lock;
         private WinState _winState;
         private readonly IEndMsgProcessor _message;
-        public event Action<bool, int2, string> OnShowPanel;
 
+        public event Action<bool, int2, string> OnShowPanel;
         public event Action<CrossLineType, int2, Action<bool>> OnGameEndCross = (_, _, _) => { };
         public event Action OnRestart = () => { };
+
+        public event Action<(Sprite sprite, Color clr, int2 coord)> OnClick;
 
 
         [Inject]
@@ -37,12 +47,10 @@ namespace general
 
             _winCheck = winCheck.Create();
             _message = message;
-            Debug.Log($"Wincheck: {winCheck.GetType()}");
         }
 
 
-        public void TrySelectCell(Action<(Sprite sprite, Color clr)> callback,
-            int2 coords)
+        public void TrySelectCell(int2 coords)
         {
             if (_lock)
                 return;
@@ -58,9 +66,11 @@ namespace general
                 return;
             }
 
-            var cellState = CellStateByPlayer(_turnX);
+            var cellState = CellStateByPlayer(_turnX); 
             _cellStates[coords] = cellState;
-            callback?.Invoke(GetClrImg(cellState));
+            var vt = GetClrImg(cellState);
+            OnClick?.Invoke((vt.sprite, vt.clr, coords));
+            //callback?.Invoke(vt);
 
 
             Debug.Log($"Win State Coords: {coords}, cell state: {cellState}");
@@ -82,6 +92,7 @@ namespace general
             _turnX = !_turnX;
         }
 
+
         private void EndGameLogic(bool b)
         {
             _lock = b;
@@ -93,14 +104,6 @@ namespace general
 
         private CellState CellStateByPlayer(bool b) => b ? CellState.X : CellState.O;
 
-
-        private bool CheckWin(CellState cellState, int2 coord)
-        {
-            var currStateCells = _cellStates.Where(kvp => kvp.Value == cellState).Select(v => v.Key).ToArray();
-            return WinChecker.Row(coord.x).All(currStateCells.Contains) ||
-                   WinChecker.Column(coord.y).All(currStateCells.Contains) ||
-                   WinChecker.Diag().All(currStateCells.Contains) || WinChecker.Diag2().All(currStateCells.Contains);
-        }
 
         private (Sprite sprite, Color clr) GetClrImg(CellState cState) => cState switch
         {

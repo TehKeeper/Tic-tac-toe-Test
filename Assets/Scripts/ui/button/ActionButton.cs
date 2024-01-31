@@ -28,11 +28,12 @@ namespace ui.button
         {
             _manager = manager;
             _viewer = viewer;
-            _viewer.Init(transform);
+            _viewer.Init(transform, coord);
             _btn = GetComponent<Button>();
             _manager.OnRestart += _viewer.Reset;
+            _manager.OnClick += _viewer.Update;
 
-            _btn.onClick.AddListener(() => _manager.TrySelectCell(_viewer.Update, coord));
+            _btn.onClick.AddListener(() => _manager.TrySelectCell(coord));
         }
 
         [ContextMenu("Set Coordinate")]
@@ -45,6 +46,7 @@ namespace ui.button
         private void OnDestroy()
         {
             _manager.OnRestart -= _viewer.Reset;
+            _manager.OnClick -= _viewer.Update;
         }
     }
 }
