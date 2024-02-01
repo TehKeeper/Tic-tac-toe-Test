@@ -25,8 +25,15 @@ namespace general.save
             var value = new FieldState(state, turn).ToJson(); // state.DictToWrap().ToJson();
             PlayerPrefs.SetString("Cell_State", value);
         }
+        
+        public Pair<int, int> GetScore()
+        {
+            if (!PlayerPrefs.HasKey("Player_Score"))
+                return new();
 
-
+            var cfg = PlayerPrefs.GetString("Player_Score");
+            return JsonUtility.FromJson<Pair<int, int>>(cfg);
+        }
         public void SaveScore(CellState winner)
         {
             var sm = GetScore();
@@ -43,18 +50,9 @@ namespace general.save
                     outp = sm;
                     break;
             }
-
-            Debug.Log($"Current player score: X - {outp.a}, O - {outp.b}, winner: winner");
+            
             PlayerPrefs.SetString("Player_Score", outp.ToJson());
         }
 
-        public Pair<int, int> GetScore()
-        {
-            if (!PlayerPrefs.HasKey("Player_Score"))
-                return new();
-
-            var cfg = PlayerPrefs.GetString("Player_Score");
-            return JsonUtility.FromJson<Pair<int, int>>(cfg);
-        }
     }
 }

@@ -27,15 +27,16 @@ namespace ui
             _gameManager.OnGameEndCross += Cross;
             _gameManager.OnRestart += Hide;
 
-            Enable(false);
+            Hide();
         }
-
-        private void Hide() => Enable(false);
 
         private void Enable(bool b)
         {
             _img.color = b ? Color.white : Color.clear;
         }
+
+        private void Hide() => Enable(false);
+
 
         public void Cross(CrossLineType crossType, int2 coord, Action<bool> handler)
         {
@@ -64,7 +65,8 @@ namespace ui
                     Extend(466, handler);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(crossType), crossType, null);
+                    handler?.Invoke(false);
+                    break;
             }
         }
 
@@ -86,7 +88,7 @@ namespace ui
 
                 yield return null;
             }
-            
+
             handler?.Invoke(false);
         }
 
