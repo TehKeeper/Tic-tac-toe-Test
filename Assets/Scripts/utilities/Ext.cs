@@ -16,8 +16,11 @@ namespace utilities
 
         public static Transform FindTransform(this Transform tf, string name) => Util.FindTransform(name, tf);
 
+        /*public static T FindComponent<T>(this Transform tf, string name) where T : Component =>
+            Util.FindComponent<T>(name, tf);*/
+
         public static T FindComponent<T>(this Transform tf, string name) where T : Component =>
-            Util.FindComponent<T>(name, tf);
+            tf.GetComponentsInChildren<T>().FirstOrDefault(x => x.name == name);
 
         public static T[] FindComponents<T>(this Transform tf, params string[] names) where T : Component
         {
@@ -119,7 +122,7 @@ namespace utilities
             list.Remove(obj);
             return true;
         }
-        
+
 
         public static WrapArray<Pair<T1, T2>> DictToWrap<T1, T2>(this Dictionary<T1, T2> targ) =>
             new WrapArray<Pair<T1, T2>>(targ.Select(v => new Pair<T1, T2>(v.Key, v.Value)));
@@ -154,7 +157,5 @@ namespace utilities
 
             return string.Join("", charList); // charList.ToString();
         }
-
-
     }
 }

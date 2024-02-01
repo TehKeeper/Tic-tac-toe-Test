@@ -22,10 +22,12 @@ namespace ui
             _manager.OnShowPanel += ShowPanel;
             _manager.OnRestart += HidePanel;
             _cg = GetComponent<CanvasGroup>();
+
+            var tf = transform;
+            _xCount = tf.FindComponent<TMP_Text>("X_Count");
+            _oCount = tf.FindComponent<TMP_Text>("O_Count");
+            _header = tf.FindComponent<TMP_Text>("Header");
             
-            _xCount = transform.FindComponent<TMP_Text>("X_Count");
-            _oCount = transform.FindComponent<TMP_Text>("O_Count");
-            _header = transform.FindComponent<TMP_Text>("Header");
         }
 
         private void HidePanel() => _cg.Enable(false);
@@ -33,9 +35,12 @@ namespace ui
         private void ShowPanel(bool b, Pair<int,int> count, string message)
         {
             _cg.Enable(b);
-            _xCount.text = $"{count.a}";
-            _oCount.text = $"{count.b}";
-            _header.text = message;
+            if(_xCount)
+                _xCount.text = $"{count.a}";
+            if(_oCount)
+                _oCount.text = $"{count.b}";
+            if(_header)
+                _header.text = message;
         }
 
         private void OnDestroy() => _manager.OnShowPanel += ShowPanel;
