@@ -22,9 +22,9 @@ namespace ui
             _manager.OnShowPanel += ShowPanel;
             _manager.OnRestart += HidePanel;
             _cg = GetComponent<CanvasGroup>();
+            
             _xCount = transform.FindComponent<TMP_Text>("X_Count");
             _oCount = transform.FindComponent<TMP_Text>("O_Count");
-
             _header = transform.FindComponent<TMP_Text>("Header");
         }
 
@@ -32,7 +32,6 @@ namespace ui
 
         private void ShowPanel(bool b, Pair<int,int> count, string message)
         {
-            Debug.Log("Show Panel");
             _cg.Enable(b);
             _xCount.text = $"{count.a}";
             _oCount.text = $"{count.b}";

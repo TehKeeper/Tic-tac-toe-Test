@@ -5,6 +5,7 @@ using general.win;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
+using utilities;
 using Zenject;
 
 namespace ui
@@ -79,15 +80,17 @@ namespace ui
         private IEnumerator Extend_C(int length, Action<bool> handler)
         {
             float value = 0;
-            float speed = 0.025f;
+            float speed = 0.01f;
             handler?.Invoke(true);
             while (value < 1)
             {
-                value = Mathf.Clamp01(value + speed);
+                value = Mathf.Clamp01(value + Util.SineMove(speed / 50f, speed, value));
                 _imgRtf.sizeDelta = new Vector2(Mathf.Lerp(20, length, value), 100);
 
                 yield return null;
             }
+
+            yield return new WaitForSeconds(0.2f);
 
             handler?.Invoke(false);
         }
