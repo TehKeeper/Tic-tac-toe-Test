@@ -1,5 +1,6 @@
 ﻿using general;
 using general.save;
+using general.tools;
 using general.win.condition;
 using general.win.condition.factory;
 using general.win.message;
@@ -17,6 +18,7 @@ namespace injections
             Container.Bind<WinCheckBase>().To<WinCheckOne>().AsTransient();
             Container.Bind<IEndMsgProcessor>().To<EndGameMessage>().AsTransient();
             Container.Bind<ISaveSys>().To<SaveSys>().AsSingle().NonLazy();
+            Container.Bind<ICellColor>().To<CellColor>().AsSingle().NonLazy();
         }
     }
 }

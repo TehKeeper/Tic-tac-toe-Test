@@ -43,6 +43,6 @@ namespace ui
                 _header.text = message;
         }
 
-        private void OnDestroy() => _manager.OnShowPanel += ShowPanel;
+        private void OnDestroy() => _manager.OnShowPanel -= ShowPanel;
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using general.save;
+using general.tools;
 using general.win;
 using general.win.condition;
 using general.win.message;
@@ -13,12 +14,11 @@ using Zenject;
 
 namespace general
 {
+
     public class GameManager : IGameManager
     {
         private Dictionary<int2, CellState> _cellStates = new();
         private bool _turnO;
-        private readonly Sprite _xImg;
-        private readonly Sprite _oImg;
 
         private readonly WinConditionBase _winCheck;
 
@@ -26,23 +26,23 @@ namespace general
         private WinState _winState;
         private readonly IEndMsgProcessor _message;
         private readonly ISaveSys _saveSys;
+        private readonly ICellColor _color;
 
         public event Action<bool, Pair<int, int>, string> OnShowPanel;
         public event Action<CrossLineType, int2, Action<bool>> OnGameEndCross;
         public event Action OnRestart;
-
         public event Action<(Sprite sprite, Color clr), int2> OnClick;
 
 
         [Inject]
-        public GameManager(WinCheckBase winCheck, IEndMsgProcessor message, ISaveSys saveSys)
+        public GameManager(WinCheckBase winCheck, IEndMsgProcessor message, ISaveSys saveSys, ICellColor color)
         {
-            _xImg = Resources.Load<Sprite>("Sprites/Ximg");
-            _oImg = Resources.Load<Sprite>("Sprites/Oimg");
+         
 
             _winCheck = winCheck.Create();
             _message = message;
             _saveSys = saveSys;
+            _color = color;
 
             TryRestoreField();
         }
@@ -74,7 +74,7 @@ namespace general
             var cellState = CellStateByPlayer(_turnO);
             _cellStates[coords] = cellState;
 
-            OnClick?.Invoke(GetClrImg(cellState), coords);
+            OnClick?.Invoke(_color.GetClrSprite(cellState), coords);
 
 
             Debug.Log($"Win State Coords: {coords}, cell state: {cellState}");
@@ -91,7 +91,7 @@ namespace general
                     OnGameEndCross?.Invoke(_winState.Line, _winState.Coord, EndGameLogic);
                 else
                     EndGameLogic(false);
-                
+
                 return;
             }
 
@@ -116,13 +116,6 @@ namespace general
         private CellState CellStateByPlayer(bool b) => b ? CellState.O : CellState.X;
 
 
-        private (Sprite sprite, Color clr) GetClrImg(CellState cState) => cState switch
-        {
-            CellState.X => (_xImg, Color.red),
-            CellState.O => (_oImg, Color.blue),
-            _ => (null, Color.clear)
-        };
-
         public void Restart()
         {
             if (_lock)
@@ -136,12 +129,11 @@ namespace general
 
         public void Touch(int2 coord)
         {
-            if (_cellStates == null || _cellStates.Count==0)
+            if (_cellStates == null || _cellStates.Count == 0)
                 return;
-            
 
             if (_cellStates.Keys.Contains(coord))
-                OnClick?.Invoke(GetClrImg(_cellStates[coord]), coord);
+                OnClick?.Invoke(_color.GetClrSprite(_cellStates[coord]), coord);
         }
     }
 }
